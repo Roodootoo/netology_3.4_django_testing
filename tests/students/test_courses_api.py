@@ -28,13 +28,15 @@ def course_factory():
 @pytest.mark.django_db
 def test_get_first_course(client, course_factory, student_factory):
     course = course_factory(_quantity=1)
+    course_id = str(course[0].id)
+    print(course_id)
 
-    url = reverse('courses-list')
+    url = reverse('courses-detail', args=(course_id,))
     response = client.get(url)
     data = response.json()
 
     assert response.status_code == 200
-    assert data[0]['name'] == course[0].name
+    assert data['name'] == course[0].name
 
 
 @pytest.mark.django_db
@@ -59,8 +61,7 @@ def test_filter_id_courses(client, course_factory, student_factory):
     response = client.get(url)
 
     data = response.json()
-    print(response.status_code)
-    print(data)
+
     assert response.status_code == 200
     assert data['name'] == courses[2].name
 
